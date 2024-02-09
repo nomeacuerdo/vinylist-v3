@@ -26,6 +26,13 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+
+@layer components {
+  .nav {
+    @apply block box-content sticky top-0 py-1 px-2;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
