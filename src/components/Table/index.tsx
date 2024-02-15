@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import React, { useState, FC, isValidElement } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -30,21 +30,24 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/components/ui/select";
-import { Release } from '@/app/types';
+import { Release } from './types';
 
 interface TableProps {
   data: Release[];
 }
 
+// @ts-ignore
 const columns: ColumnDef<Release>[] = [
   {
     accessorKey: "cover",
+    // @ts-ignore
     title: "Cover",
     header: "Cover",
     filter: false,
   },
   {
     accessorKey: "basic_information.title",
+    // @ts-ignore
     title: "Name",
     header: ({ column }) => {
       return (
@@ -61,6 +64,7 @@ const columns: ColumnDef<Release>[] = [
   },
   {
     accessorKey: "artist",
+    // @ts-ignore
     title: "Artist",
     header: ({ column }) => {
       return (
@@ -77,6 +81,7 @@ const columns: ColumnDef<Release>[] = [
   },
   {
     accessorKey: "format",
+    // @ts-ignore
     title: "Format",
     header: ({ column }) => {
       return (
@@ -93,6 +98,7 @@ const columns: ColumnDef<Release>[] = [
   },
   {
     accessorKey: "year",
+    // @ts-ignore
     title: "Year",
     header: ({ column }) => {
       return (
@@ -109,6 +115,7 @@ const columns: ColumnDef<Release>[] = [
   },
   {
     accessorKey: "acquired",
+    // @ts-ignore
     title: "Acquired",
     header: ({ column }) => {
       return (
@@ -177,10 +184,12 @@ const DataTable: FC<TableProps> = ({ data }) => {
                           )
                       }
                       {
+                        // @ts-ignore
                         header.column.columnDef.filter &&
                         getFilter(
                           table,
                           header.column.id,
+                          // @ts-ignore
                           header.column.columnDef.title
                         )
                       }
@@ -200,9 +209,10 @@ const DataTable: FC<TableProps> = ({ data }) => {
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {
+                        // @ts-ignore
                         cell.column.columnDef.title === 'Cover'
-                        ? (cell.getValue())
-                        : flexRender(cell.column.columnDef.cell, cell.getContext())
+                        ? (cell.getValue() as React.ReactNode)
+                        : flexRender(cell.column.columnDef.cell, cell.getContext()) as React.ReactNode
                       }
                     </TableCell>
                   ))}
@@ -240,7 +250,7 @@ const DataTable: FC<TableProps> = ({ data }) => {
         </div>
         <div className="flex-none">
           <Select
-            value={table.getState().pagination.pageSize}
+            value={String(table.getState().pagination.pageSize)}
             onValueChange={e => table.setPageSize(Number(e))}
           >
             <SelectTrigger className="w-[180px]">
@@ -249,7 +259,7 @@ const DataTable: FC<TableProps> = ({ data }) => {
             <SelectContent>
               <SelectGroup>
                 {[10, 20, 30, 40, 50].map(pageSize => (
-                  <SelectItem key={pageSize} value={pageSize}>Show {pageSize}</SelectItem>
+                  <SelectItem key={pageSize} value={String(pageSize)}>Show {pageSize}</SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>

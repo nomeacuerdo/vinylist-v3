@@ -48,7 +48,7 @@ const getFormat = (format: string[]): string => {
   }
 };
 
-const stupidSpecificArtistNamingCriteria = (diskInfo, multi) => {
+const stupidSpecificArtistNamingCriteria = (diskInfo: any, multi: boolean) => {
   const namingMatrix = [
     // Style Changes
     ['Молчат Дома = Молчат Дома', 'Molchat Doma (Молчат Дома)'],
@@ -90,7 +90,7 @@ const stupidSpecificArtistNamingCriteria = (diskInfo, multi) => {
   ];
 
   let artist = multi
-    ? diskInfo.artists.reduce((sum, itm) => {
+    ? diskInfo.artists.reduce((sum: string, itm: any) => {
       const normalizedName = itm.name.startsWith('The ') ? `${itm.name.substring(3)} [The]` : itm.name;
       return `${sum} ${normalizedName} ${itm.join}`;
     }, '').trim()
@@ -126,7 +126,7 @@ export default async function Home() {
       cover: (
         <Avatar>
           <AvatarImage src={thumb} alt={title} />
-          <AvatarFallback>{title.split().pop()}</AvatarFallback>
+          <AvatarFallback>{title.split('').pop()}</AvatarFallback>
         </Avatar>
       ),
       artist,
