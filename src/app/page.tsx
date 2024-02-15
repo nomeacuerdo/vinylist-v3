@@ -1,6 +1,32 @@
 import Image from "next/image";
 
-export default function Home() {
+async function getData(
+  url: string = 'https://api.discogs.com/users/no-me-acuerdo/collection/folders/0/releases?per_page=100',
+  recursive = false
+): Promise<any[]> {
+  const res = await fetch(url, {
+    headers: {
+      Authorization: 'Discogs key=PjNgHzSjSNIULkrCsSmT, secret=zwvQZAPKYBJmNfJxzxtlUfWIbTblEkAf, token=uuIWTZNgdYAOOFhQJRokeWBrTcDsrQYMHwaPJRov',
+      'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
+    }
+  });
+  const { releases, pagination } = await res.json();
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch data')
+  }
+
+  if (pagination.page < pagination.pages) {
+    const nextData = await getData(pagination.urls.next);
+    return releases.concat(nextData);
+  } else {
+    return releases;
+  }
+}
+
+export default async function Home() {
+  // const data = await getData();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
