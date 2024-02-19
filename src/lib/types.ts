@@ -24,6 +24,17 @@ export type Release = {
   }[];
 };
 
+export type PaginationType = {
+  page: number;
+  pages: number;
+  per_page: number;
+  items: number;
+  urls: {
+    prev?: string;
+    next?: string;
+  }
+};
+
 export type FolderType = {
   id: number;
   count: number;

@@ -1,23 +1,12 @@
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  PersonIcon,
-} from "@radix-ui/react-icons";
 
-import {
-  Command,
-  CommandList,
-  CommandGroup,
-  CommandItem,
-  CommandShortcut,
-  CommandSeparator,
-} from "@/components/ui/command";
+import { CommandShortcut } from "@/components/ui/command";
 import { FolderType } from '@/lib/types';
 
 async function getData(
-  url: string = 'https://api.discogs.com/users/no-me-acuerdo/collection/folders',
-  recursive = false
+  url: string = 'https://api.discogs.com/users/no-me-acuerdo/collection/folders'
 ): Promise<any[]> {
   const res = await fetch(url, {
     headers: {
@@ -60,31 +49,6 @@ export default async function Folders() {
           </Link>
         ))}
       </div>
-
-      {/*
-      <Command className="rounded-lg border shadow-md mt-4 w-64 h-max">
-          <CommandGroup heading="Tiendas">
-            {
-              folders.map((item) => (
-                <>
-                  <CommandItem>
-                    <PersonIcon className="mr-2 h-4 w-4" />
-                    <Link href={`/folders/${item.id}`}>
-                      <span>{item.name}</span>
-                    </Link>
-                    <CommandShortcut>
-                      {item.count}
-                    </CommandShortcut>
-                  </CommandItem>
-                  {
-                    item.name === 'All' && (<CommandSeparator />)
-                  }
-                </>
-              ))
-            }
-          </CommandGroup>
-      </Command>
-      */}
     </main>
   );
 }

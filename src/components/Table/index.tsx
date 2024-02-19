@@ -1,4 +1,5 @@
 "use client"
+import Link from 'next/link';
 import { useMediaQuery } from '@chakra-ui/react';
 import React, { useEffect, useState, FC, isValidElement } from 'react';
 import {
@@ -68,6 +69,17 @@ const defaultColumns: ColumnDef<Release>[] = [
       )
     },
     filter: true,
+    cell: ({row}) => {
+      const item = row.original;
+      return (
+        <Link
+          key={item.id}
+          href={`/release/${item.id}`}
+        >
+          {item.basic_information.title}
+        </Link>
+      );
+    },
   },
   {
     id: "artist",

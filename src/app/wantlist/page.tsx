@@ -1,14 +1,11 @@
-import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Table from '@/components/Table';
 import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
-import { Release } from '@/lib/types';
+import { Release, PaginationType } from '@/lib/types';
 
 async function getData(
   url: string = 'https://api.discogs.com/users/no-me-acuerdo/wants?per_page=100'
-): Promise<any[]> {
+): Promise<[Release[], PaginationType]> {
   const res = await fetch(url, {
     headers: {
       Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
@@ -23,9 +20,9 @@ async function getData(
 
   if (pagination.page < pagination.pages) {
     const nextData = await getData(pagination.urls.next);
-    return wants.concat(nextData);
+    return [wants.concat(nextData[0]), pagination];
   } else {
-    return wants;
+    return [wants, pagination];
   }
 }
 
@@ -66,7 +63,7 @@ const wantlistColumns: ColumnDef<Release>[] = [
 
 export default async function Page({ params }: { params: { id: string } }) {
   const url = `https://api.discogs.com/users/no-me-acuerdo/wants?per_page=100`;
-  const data: Release[] = await getData(url);
+  const [data, pagination]: [Release[], PaginationType] = await getData(url);
   const formattedData = data.map((item) => {
     const { title, thumb } = item.basic_information;
     const artist = item.basic_information.artists.length > 1
@@ -88,10 +85,14 @@ export default async function Page({ params }: { params: { id: string } }) {
   return(
     <main className="flex min-h-screen flex-col items-center justify-start pt-4 md:pt-14">
       <h1 className="text-2xl pb-4">
-        Wantlist
+        Wantlist ({pagination.items})
       </h1>
 
       <Table data={formattedData} columnProps={wantlistColumns} />
+
+      <div className="rounded-md border w-full hidden">
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+      </div>
     </main>
   );
 }

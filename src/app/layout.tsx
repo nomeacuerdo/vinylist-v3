@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from 'next/link';
 import { Inter } from "next/font/google";
 import Logo from '@/components/Logo';
 import Button from '@/components/Button';
@@ -22,13 +23,15 @@ export default function RootLayout({
         <nav className="flex h-16 px-4 mb-2 border-b">
           <div className="flex container mx-auto items-center md:space-x-4 lg:space-x-6 p-0">
             <div className="flex items-center">
-              <Logo className="fill-indigo-600 pr-1" />
-              <span className="bg-gradient-to-br from-indigo-600 to-pink-500 bg-clip-text text-transparent box-decoration-clone m-0 pr-4">
-                nomeacuerdo records
-              </span>
+              <Link href="/" className="flex items-center">
+                <Logo className="fill-indigo-600 pr-1" />
+                <span className="bg-gradient-to-br from-indigo-600 to-pink-500 bg-clip-text text-transparent box-decoration-clone m-0 pr-4">
+                  nomeacuerdo records
+                </span>
+              </Link>
             </div>
             <div className="flex items-center">
-              <Button href="/">Home</Button>
+              <Button href="/" className="max-sm:hidden">Home</Button>
               <Button href="/folders">Dealers</Button>
               <Button href="/wantlist">Wantlist</Button>
             </div>
