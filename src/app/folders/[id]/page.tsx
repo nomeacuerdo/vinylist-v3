@@ -13,7 +13,7 @@ async function getData(
 ): Promise<any[]> {
   const res = await fetch(url, {
     headers: {
-      Authorization: 'Discogs token=uuIWTZNgdYAOOFhQJRokeWBrTcDsrQYMHwaPJRov',
+      Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
       'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
     }
   });
@@ -33,7 +33,7 @@ async function getData(
 async function getFolderData(url: string): Promise<FolderType> {
   const res = await fetch(url, {
     headers: {
-      Authorization: 'Discogs token=uuIWTZNgdYAOOFhQJRokeWBrTcDsrQYMHwaPJRov',
+      Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
       'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
     }
   });

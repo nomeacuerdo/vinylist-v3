@@ -13,8 +13,7 @@ async function getData(
 ): Promise<any[]> {
   const res = await fetch(url, {
     headers: {
-      // Authorization: 'Discogs key=PjNgHzSjSNIULkrCsSmT, secret=zwvQZAPKYBJmNfJxzxtlUfWIbTblEkAf, token=uuIWTZNgdYAOOFhQJRokeWBrTcDsrQYMHwaPJRov',
-      Authorization: 'Discogs token=uuIWTZNgdYAOOFhQJRokeWBrTcDsrQYMHwaPJRov',
+      Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
       'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
     }
   });
