@@ -1,8 +1,3 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
 import Table from '@/components/Table';
 import { Release } from '@/lib/types';
 import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
@@ -41,12 +36,7 @@ export default async function Home() {
 
     const newItem = {
       ...item,
-      cover: (
-        <Avatar>
-          <AvatarImage src={thumb} alt={title} />
-          <AvatarFallback>{title.split('').pop()}</AvatarFallback>
-        </Avatar>
-      ),
+      cover: thumb,
       artist,
       format: getFormat(item.basic_information?.formats[0]?.descriptions),
       acquired: item.notes[0]?.value || '',

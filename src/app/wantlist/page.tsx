@@ -2,11 +2,6 @@ import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
 import Table from '@/components/Table';
 import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
 import { Release } from '@/lib/types';
@@ -80,12 +75,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     const newItem = {
       ...item,
-      cover: (
-        <Avatar>
-          <AvatarImage src={thumb} alt={title} />
-          <AvatarFallback>{title.split('').pop()}</AvatarFallback>
-        </Avatar>
-      ),
+      cover: thumb,
       artist,
       format: getFormat(item.basic_information?.formats[0]?.descriptions),
       acquired: item.notes[0]?.value || '',

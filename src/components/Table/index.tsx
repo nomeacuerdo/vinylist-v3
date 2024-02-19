@@ -11,8 +11,10 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  Cell,
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import Modal from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -240,12 +242,12 @@ const DataTable: FC<TableProps> = ({ data, columnProps }) => {
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell: Cell<Release, string & unknown>) => (
                     <TableCell key={cell.id}>
                       {
                         // @ts-ignore
                         cell.column.columnDef.title === 'Cover'
-                        ? (cell.getValue() as React.ReactNode)
+                        ? (<Modal cell={cell} />)
                         : flexRender(cell.column.columnDef.cell, cell.getContext()) as React.ReactNode
                       }
                     </TableCell>
