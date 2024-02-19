@@ -24,6 +24,30 @@ export type Release = {
   }[];
 };
 
+export type FolderType = {
+  id: number;
+  count: number;
+  name: string;
+  resource_url: string;
+};
+
+// {
+//   "folders": [
+//     {
+//       "id": 0,
+//       "count": 23,
+//       "name": "All",
+//       "resource_url": "https://api.discogs.com/users/example/collection/folders/0"
+//     },
+//     {
+//       "id": 1,
+//       "count": 20,
+//       "name": "Uncategorized",
+//       "resource_url": "https://api.discogs.com/users/example/collection/folders/1"
+//     }
+//   ]
+// }
+
 // {
 //   id: 10886115,
 //   instance_id: 667160083,

@@ -13,12 +13,16 @@ const Button: FC<ButtonProps> = ({ href, children }) => {
   const pathname = usePathname();
 
   return (
-    <Link
-      className={`btn ${pathname === href ? 'btn-blue' : ''}`}
-      href={href}
-    >
-      {children}
-    </Link>
+    <>
+      <Link
+        className={`flex content-center items-center justify-center px-2 h-16 ${pathname === href && 'bg-gradient-to-r from-indigo-600 to-pink-500'} hover:bg-pink-500 hover:text-black hover:animate-pulse`}
+        href={href}
+      >
+        <span className={`inline-block text-sm font-medium transition-colors`}>
+          {children}
+        </span>
+      </Link>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
-'use client'
-import React, { useState, FC, isValidElement } from 'react';
+"use client"
+import { useMediaQuery } from '@chakra-ui/react';
+import React, { useEffect, useState, FC, isValidElement } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -11,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,15 +31,18 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/components/ui/select";
-import { Release } from './types';
+import './styles.css';
+import { Release } from '@/lib/types';
 
 interface TableProps {
   data: Release[];
+  columnProps?: ColumnDef<Release>[];
 }
 
 // @ts-ignore
-const columns: ColumnDef<Release>[] = [
+const defaultColumns: ColumnDef<Release>[] = [
   {
+    id: "cover",
     accessorKey: "cover",
     // @ts-ignore
     title: "Cover",
@@ -46,6 +50,7 @@ const columns: ColumnDef<Release>[] = [
     filter: false,
   },
   {
+    id: "title",
     accessorKey: "basic_information.title",
     // @ts-ignore
     title: "Name",
@@ -63,6 +68,7 @@ const columns: ColumnDef<Release>[] = [
     filter: true,
   },
   {
+    id: "artist",
     accessorKey: "artist",
     // @ts-ignore
     title: "Artist",
@@ -80,6 +86,7 @@ const columns: ColumnDef<Release>[] = [
     filter: true,
   },
   {
+    id: "format",
     accessorKey: "format",
     // @ts-ignore
     title: "Format",
@@ -97,6 +104,7 @@ const columns: ColumnDef<Release>[] = [
     filter: true,
   },
   {
+    id: "year",
     accessorKey: "year",
     // @ts-ignore
     title: "Year",
@@ -114,6 +122,7 @@ const columns: ColumnDef<Release>[] = [
     filter: true,
   },
   {
+    id: "acquired",
     accessorKey: "acquired",
     // @ts-ignore
     title: "Acquired",
@@ -143,9 +152,21 @@ const getFilter = (table: any, column: string, title: string) => (
   />
 );
 
-const DataTable: FC<TableProps> = ({ data }) => {
+const DataTable: FC<TableProps> = ({ data, columnProps }) => {
+  const columns = columnProps || defaultColumns;
   const [sorting, setSorting] = useState<SortingState>([{ id: "artist", desc: false }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [isMobile] = useMediaQuery('(max-width: 768px)');
+
+  const [columnVisibility, setColumnVisibility] = useState({
+    cover: true,
+    title: true,
+    artist: true,
+    format: true,
+    year: true,
+    acquired: true,
+  });
+
   const table = useReactTable({
     data,
     columns,
@@ -154,22 +175,35 @@ const DataTable: FC<TableProps> = ({ data }) => {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
+    // onColumnVisibilityChange: setColumnVisibility,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
+      columnVisibility,
       sorting,
       columnFilters,
     },
   });
 
+  useEffect(() => {
+    setColumnVisibility({
+      cover: true,
+      title: true,
+      artist: true,
+      format: !isMobile,
+      year: !isMobile,
+      acquired: !isMobile,
+    });
+  }, [isMobile]);
+
   return (
     <>
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border w-full">
+        <Table className="table-bullshit w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  const isSorted = header.column.getIsSorted() && 'text-neutral-50';
+                  const isSorted = header.column.getIsSorted() && 'text-indigo-600';
                   return (
                     <TableHead
                       className={`content-start ${isSorted}`}
@@ -228,8 +262,8 @@ const DataTable: FC<TableProps> = ({ data }) => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex w-full py-4">
-        <div className="flex items-center justify-center grow">
+      <div className="flex flex-wrap w-full">
+        <div className="flex items-center justify-start md:justify-center grow py-4">
           <Button
             variant="outline"
             size="sm"
@@ -248,7 +282,7 @@ const DataTable: FC<TableProps> = ({ data }) => {
             Next
           </Button>
         </div>
-        <div className="flex-none">
+        <div className="flex-none py-4">
           <Select
             value={String(table.getState().pagination.pageSize)}
             onValueChange={e => table.setPageSize(Number(e))}
