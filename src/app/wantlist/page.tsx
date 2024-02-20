@@ -4,12 +4,12 @@ import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
 import { Release, PaginationType } from '@/lib/types';
 
 async function getData(
-  url: string = 'https://api.discogs.com/users/no-me-acuerdo/wants?per_page=100'
+  url: string = `https://api.discogs.com/users/${process.env.USERNAME}/wants?per_page=100`
 ): Promise<[Release[], PaginationType]> {
   const res = await fetch(url, {
     headers: {
       Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
+      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
     }
   });
   const { wants, pagination } = await res.json();
@@ -62,7 +62,7 @@ const wantlistColumns: ColumnDef<Release>[] = [
 ];
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const url = `https://api.discogs.com/users/no-me-acuerdo/wants?per_page=100`;
+  const url = `https://api.discogs.com/users/${process.env.USERNAME}/wants?per_page=100`;
   const [data, pagination]: [Release[], PaginationType] = await getData(url);
   const formattedData = data.map((item) => {
     const { title, thumb } = item.basic_information;

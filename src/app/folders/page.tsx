@@ -6,12 +6,12 @@ import { CommandShortcut } from "@/components/ui/command";
 import { FolderType } from '@/lib/types';
 
 async function getData(
-  url: string = 'https://api.discogs.com/users/no-me-acuerdo/collection/folders'
+  url: string = `https://api.discogs.com/users/${process.env.USERNAME}/collection/folders`
 ): Promise<any[]> {
   const res = await fetch(url, {
     headers: {
       Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
+      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
     }
   });
   const { folders } = await res.json();

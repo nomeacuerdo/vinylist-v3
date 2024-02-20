@@ -15,7 +15,7 @@ async function getReleaseData(url: string): Promise<Release> {
   const res = await fetch(url, {
     headers: {
       Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
+      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
     }
   });
 
@@ -31,7 +31,7 @@ async function getParentReleaseData(url: string): Promise<Release> {
   const res = await fetch(url, {
     headers: {
       Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
+      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
     }
   });
 
@@ -43,7 +43,7 @@ async function getParentReleaseData(url: string): Promise<Release> {
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const releaseData: Release = await getReleaseData(`https://api.discogs.com/users/no-me-acuerdo/collection/releases/${params.id}`);
+  const releaseData: Release = await getReleaseData(`https://api.discogs.com/users/${process.env.USERNAME}/collection/releases/${params.id}`);
   const parentRelease: Release = await getParentReleaseData(`https://api.discogs.com/releases/${params.id}`);
   const cover = releaseData?.basic_information.cover_image;
   const title = releaseData?.basic_information.title;

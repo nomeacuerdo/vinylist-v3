@@ -3,12 +3,12 @@ import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
 import { Release, FolderType } from '@/lib/types';
 
 async function getData(
-  url: string = 'https://api.discogs.com/users/no-me-acuerdo/collection/folders/0/releases?per_page=100'
+  url: string = `https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/0/releases?per_page=100`
 ): Promise<any[]> {
   const res = await fetch(url, {
     headers: {
       Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
+      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
     }
   });
   const { releases, pagination } = await res.json();
@@ -28,7 +28,7 @@ async function getFolderData(url: string): Promise<FolderType> {
   const res = await fetch(url, {
     headers: {
       Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/0.1 +https://github.com/nomeacuerdo/vinylist',
+      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
     }
   });
   const folder = await res.json();
@@ -41,9 +41,9 @@ async function getFolderData(url: string): Promise<FolderType> {
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const folderData: FolderType = await getFolderData(`https://api.discogs.com/users/no-me-acuerdo/collection/folders/${params.id}`);
+  const folderData: FolderType = await getFolderData(`https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/${params.id}`);
 
-  const url = `https://api.discogs.com/users/no-me-acuerdo/collection/folders/${params.id}/releases?per_page=100`;
+  const url = `https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/${params.id}/releases?per_page=100`;
   const data: Release[] = await getData(url);
   const formattedData = data.map((item) => {
     const { title, thumb } = item.basic_information;
