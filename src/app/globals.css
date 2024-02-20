@@ -64,6 +64,27 @@
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
   }
+
+  html {
+    font-family: var(--font-inter);
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-oswald);
+  }
+
+  h1 {
+    font-weight: 300;
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-weight: 500;
+  }
+
+  h2 span {
+    font-family: var(--font-inter);
+    font-weight: 300;
+  }
 }
  
 @layer base {

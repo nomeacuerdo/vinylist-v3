@@ -75,17 +75,17 @@ export default async function Page({ params }: { params: { id: string } }) {
         </Link>
       </div>
       <div className='w-auto grow pl-4 pt-10'>
-        <h1 className="text-2xl py-4">
+        <h1 className="text-6xl py-4">
           {artist} - {title} ({releaseData?.basic_information.year})
         </h1>
         <h2>
-          Original Year: {releaseData?.notes[1].value}
+          Original Year: <span>{releaseData?.notes[1].value}</span>
         </h2>
         <h2>
-          Format: {format}
+          Format: <span>{format}</span>
         </h2>
         <h2>
-          Acquired: {releaseData?.notes[0].value}
+          Acquired: <span>{releaseData?.notes[0].value}</span>
         </h2>
         <h2 className="mt-4">Tracklist:</h2>
         <div>
@@ -94,14 +94,25 @@ export default async function Page({ params }: { params: { id: string } }) {
             {
               // @ts-ignore
               parentRelease?.tracklist.map((item) => {
-                const duration = item.duration ? `(${item.duration})` : '';
+                const duration = item.duration ? `(${item.duration})` : null;
+                const isTrack = item.type_ === 'track';
                 return (
                   <TableRow key={item.position}>
-                    <TableCell>
+                    <TableCell className={!isTrack ? 'bg-slate-600' : ''}>
                       {item.position}
                     </TableCell>
-                    <TableCell>{item.title}</TableCell>
-                    <TableCell>{duration}</TableCell>
+                    <TableCell className={!isTrack ? 'bg-slate-600' : ''}>
+                      {
+                        isTrack
+                        ? (item.title)
+                        : (<h3>{item.title}</h3>)
+                      }
+                    </TableCell>
+                    {
+                      duration
+                      ? (<TableCell className={!isTrack ? 'bg-slate-600' : ''}>{duration}</TableCell>)
+                      : null
+                    }
                   </TableRow>
                 );
               })

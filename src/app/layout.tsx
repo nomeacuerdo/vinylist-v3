@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from 'next/link';
-import { Inter } from "next/font/google";
+import { Oswald, Inter } from 'next/font/google'
 import Logo from '@/components/Logo';
 import Button from '@/components/Button';
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
+const oswald = Oswald({ weight: ['300', '500'], subsets: ["latin"], variable: '--font-oswald' });
 
 export const metadata: Metadata = {
   title: "The Vinylist v3",
@@ -19,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${oswald.variable}`}>
         <nav className="flex h-16 px-4 mb-2 border-b">
           <div className="flex container mx-auto items-center md:space-x-4 lg:space-x-6 p-0">
             <div className="flex items-center">
