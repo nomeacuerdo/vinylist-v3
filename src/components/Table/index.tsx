@@ -34,6 +34,15 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  ChevronDownIcon,
+} from "@radix-ui/react-icons";
 import './styles.css';
 import { Release } from '@/lib/types';
 
@@ -276,8 +285,39 @@ const DataTable: FC<TableProps> = ({ data, columnProps }) => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex flex-wrap w-full">
-        <div className="flex items-center justify-start md:justify-center grow py-4">
+      <div className="flex flex-wrap-reverse md:flex-wrap w-full">
+        <div className='flex items-start justify-start py-4 order-1 md:order-1'>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => 
+                        setColumnVisibility({
+                          ...columnVisibility,
+                          [column.id]: value,
+                        })
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="flex items-center justify-center md:justify-start md:justify-center grow py-4 order-3 md:order-2">
           <Button
             variant="outline"
             size="sm"
@@ -296,7 +336,7 @@ const DataTable: FC<TableProps> = ({ data, columnProps }) => {
             Next
           </Button>
         </div>
-        <div className="flex-none py-4">
+        <div className="flex-none pl-4 md:pl-0 py-4 order-2 md:order-3">
           <Select
             value={String(table.getState().pagination.pageSize)}
             onValueChange={e => table.setPageSize(Number(e))}
