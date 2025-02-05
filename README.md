@@ -2,6 +2,8 @@
 
 [See it live](https://discos.nomeacuerdo.co/)
 
+Done and deployed using [Vercel](https://vercel.com/nomeacuerdos-projects/vinylist-v3)
+
 <hr />
 <br />
 
