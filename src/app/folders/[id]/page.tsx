@@ -1,44 +1,8 @@
 import Table from '@/components/Table';
+import DataLog from '@/components/DataLog';
 import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
 import { Release, FolderType } from '@/lib/types';
-
-async function getData(
-  url: string = `https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/0/releases?per_page=100`
-): Promise<any[]> {
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
-    }
-  });
-  const { releases, pagination } = await res.json();
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
-
-  if (pagination.page < pagination.pages) {
-    const nextData = await getData(pagination.urls.next);
-    return releases.concat(nextData);
-  } else {
-    return releases;
-  }
-}
-async function getFolderData(url: string): Promise<FolderType> {
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
-    }
-  });
-  const folder = await res.json();
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
-
-  return folder;
-}
+import { getFolderData, getData } from '@/lib/api';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const folderData: FolderType = await getFolderData(`https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/${params.id}`);
@@ -55,21 +19,27 @@ export default async function Page({ params }: { params: { id: string } }) {
       ...item,
       cover: thumb,
       artist,
-      format: getFormat(item.basic_information?.formats[0]?.descriptions),
+      format: getFormat(item.basic_information?.formats),
       acquired: item.notes[0]?.value || '',
       year:  item.notes[1]?.value || '',
+      dealer: folderData,
     };
 
     return newItem;
   });
 
   return(
-    <main className="flex min-h-screen flex-col items-center justify-start pt-4 md:pt-14">
-      <h1 className="text-2xl pb-4">
-        {folderData?.name} ({folderData?.count})
-      </h1>
+    <>
+      <main className="flex flex-col items-center justify-start pt-4 md:pt-14">
+        <h1 className="text-2xl pb-4">
+          {folderData?.name} ({folderData?.count})
+        </h1>
 
-      <Table data={formattedData} />
-    </main>
+        <Table data={formattedData} />
+      </main>
+      <div className="flex items-start justify-start pt-4 md:pt-14">
+        <DataLog data={formattedData} name="Table data" />
+      </div>
+    </>
   );
 }

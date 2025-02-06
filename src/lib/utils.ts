@@ -1,27 +1,30 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { Format } from '@/lib/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 
-export const getFormat = (format: string[]): string => {
-  if(format.includes('7"')) {
-    return '7"';
-  } else if(format.includes('10"')) {
-    return '10"';
-  } else if(format.includes('12"')) {
-    return '12"';
-  } else if(format.includes('LP')) {
-    return 'LP';
-    } else if(format.includes('Album')) {
-      return 'Album';
-      } else if(format.includes('Compilation')) {
-        return 'LP';
-  } else {
-    return format.join(', ');
-  }
+export const getFormat = (formats: Format[]): string => {
+  const allowedStrings = ['3"', '7"', '7\"', '10"', '12"', 'LP', 'CD'];
+  const format = formats.map((item) => {
+    switch(item.name) {
+      case 'Vinyl':
+        const descriptions = item.descriptions.filter(item2 => allowedStrings.includes(item2));
+        return descriptions.length > 0 ? descriptions[0] : item.name;
+      default:
+        return item.name;
+    }
+  });
+  
+  const uniqueFormats = format.filter((item, index) => {
+    return format.indexOf(item) === index && item !== 'All Media' && item !== 'Box Set';
+  });
+
+  const formatsString = uniqueFormats.join(', ');
+  return formatsString;
 };
 
 export const stupidSpecificArtistNamingCriteria = (diskInfo: any, multi: boolean) => {

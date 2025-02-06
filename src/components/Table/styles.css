@@ -6,4 +6,8 @@
   .table-bullshit {
     @apply w-10/12 md:w-full;
   }
+
+  table a {
+    text-decoration: underline;
+  }
 }

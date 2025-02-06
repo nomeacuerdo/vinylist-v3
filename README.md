@@ -9,6 +9,8 @@ Done and deployed using [Vercel](https://vercel.com/nomeacuerdos-projects/vinyli
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+This uses radix-ui.
+
 ## Getting Started
 
 First, run the development server:

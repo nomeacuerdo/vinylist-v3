@@ -1,57 +1,44 @@
 import Table from '@/components/Table';
-import { Release } from '@/lib/types';
+import DataLog from '@/components/DataLog';
+import { Release, FolderType } from '@/lib/types';
 import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
-
-async function getData(
-  url: string = `https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/0/releases?per_page=100`,
-  recursive = false
-): Promise<any[]> {
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Discogs token=${process.env.DISCOGS_TOKEN}`,
-      'user-agent': 'Vinylist/3.0 +https://discos.nomeacuerdo.co',
-    }
-  });
-  const { releases, pagination } = await res.json();
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
-
-  if (pagination.page < pagination.pages) {
-    const nextData = await getData(pagination.urls.next);
-    return releases.concat(nextData);
-  } else {
-    return releases;
-  }
-}
+import { getFolders, getData } from '@/lib/api';
 
 export default async function Home() {
-  const data: Release[] = await getData();
+  const folders: FolderType[] = await getFolders();
+
+  const url = `https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/0/releases?per_page=100`;
+  const data: Release[] = await getData(url);
+
   const formattedData = data.map((item) => {
-    const { title, thumb } = item.basic_information;
+    const { thumb } = item.basic_information;
     const artist = item.basic_information.artists.length > 1
     ? stupidSpecificArtistNamingCriteria(item.basic_information, true)
     : stupidSpecificArtistNamingCriteria(item.basic_information, false);
+    const dealer = folders.find((fold) => item.folder_id === fold.id);
 
     const newItem = {
       ...item,
       cover: thumb,
       artist,
-      format: getFormat(item.basic_information?.formats[0]?.descriptions),
+      format: getFormat(item.basic_information?.formats),
       acquired: item.notes[0]?.value || '',
       year:  item.notes[1]?.value || '',
+      dealer,
     };
 
     return newItem;
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start pt-4 md:pt-14">
-      <Table data={formattedData} />
-      <div className="rounded-md border w-full hidden">
-        <pre>{JSON.stringify(data[0], null, 2)}</pre>
+    <>
+      <main className="flex flex-col items-center justify-start pt-4 md:pt-14">
+        <Table data={formattedData} />
+      </main>
+      <div className="flex items-start justify-start pt-4 md:pt-14">
+        <DataLog data={data[0]} name="First entry" />
+        <DataLog data={formattedData} name="Table data" />
       </div>
-    </main>
+    </>
   );
 }

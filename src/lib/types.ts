@@ -14,14 +14,18 @@ export type Release = {
     artists: {
       name: string;
     }[];
-    formats: {
-      descriptions: string[];
-    }[];
+    formats: Format[];
   };
+  folder_id: number;
   notes: {
     field_id: number;
     value: string;
   }[];
+  dealer?: {
+    id: number;
+    name: string;
+  };
+  format: string;
 };
 
 export type PaginationType = {
@@ -33,6 +37,12 @@ export type PaginationType = {
     prev?: string;
     next?: string;
   }
+};
+
+export type Format = {
+  name: string;
+  qty: string;
+  descriptions: string[];
 };
 
 export type FolderType = {

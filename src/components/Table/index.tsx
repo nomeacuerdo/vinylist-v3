@@ -48,7 +48,7 @@ import { Release } from '@/lib/types';
 
 interface TableProps {
   data: Release[];
-  columnProps?: ColumnDef<Release>[];
+  wantlist?: boolean;
 }
 
 // @ts-ignore
@@ -145,6 +145,35 @@ const defaultColumns: ColumnDef<Release>[] = [
     filter: true,
   },
   {
+    id: "dealer",
+    accessorKey: "dealer.name",
+    // @ts-ignore
+    title: "Dealer",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Dealer
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    filter: true,
+    cell: ({row}) => {
+      const item = row.original;
+      return (
+        <Link
+          key={item.id}
+          href={`/folders/${item.dealer?.id}`}
+        >
+          {item.dealer?.name}
+        </Link>
+      );
+    },
+  },
+  {
     id: "acquired",
     accessorKey: "acquired",
     // @ts-ignore
@@ -156,6 +185,82 @@ const defaultColumns: ColumnDef<Release>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Acquired
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    filter: true,
+  },
+];
+// @ts-ignore
+const wantlistColumns: ColumnDef<Release>[] = [
+  {
+    id: "cover",
+    accessorKey: "cover",
+    // @ts-ignore
+    title: "Cover",
+    header: "Cover",
+    filter: false,
+  },
+  {
+    id: "title",
+    accessorKey: "basic_information.title",
+    // @ts-ignore
+    title: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    filter: true,
+    cell: ({row}) => {
+      const item = row.original;
+      return (
+        <Link
+          key={item.id}
+          href={`/release/${item.id}`}
+        >
+          {item.basic_information.title}
+        </Link>
+      );
+    },
+  },
+  {
+    id: "artist",
+    accessorKey: "artist",
+    // @ts-ignore
+    title: "Artist",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Artist
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    filter: true,
+  },
+  {
+    id: "format",
+    accessorKey: "format",
+    // @ts-ignore
+    title: "Format",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Format
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -175,8 +280,8 @@ const getFilter = (table: any, column: string, title: string) => (
   />
 );
 
-const DataTable: FC<TableProps> = ({ data, columnProps }) => {
-  const columns = columnProps || defaultColumns;
+const DataTable: FC<TableProps> = ({ data, wantlist }) => {
+  const columns = wantlist ? wantlistColumns : defaultColumns;
   const [sorting, setSorting] = useState<SortingState>([{ id: "artist", desc: false }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [isMobile] = useMediaQuery('(max-width: 768px)');
@@ -187,6 +292,7 @@ const DataTable: FC<TableProps> = ({ data, columnProps }) => {
     artist: true,
     format: true,
     year: true,
+    dealer: true,
     acquired: true,
   });
 
@@ -214,6 +320,7 @@ const DataTable: FC<TableProps> = ({ data, columnProps }) => {
       artist: true,
       format: !isMobile,
       year: !isMobile,
+      dealer: !isMobile,
       acquired: !isMobile,
     });
   }, [isMobile]);
@@ -317,7 +424,7 @@ const DataTable: FC<TableProps> = ({ data, columnProps }) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="flex items-center justify-center md:justify-start md:justify-center grow py-4 order-3 md:order-2">
+        <div className="flex items-center justify-center md:justify-center grow py-4 order-3 md:order-2">
           <Button
             variant="outline"
             size="sm"
