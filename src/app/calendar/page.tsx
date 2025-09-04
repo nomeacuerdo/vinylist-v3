@@ -4,7 +4,7 @@ import { Release, FormattedRelease, FolderType } from '@/lib/types';
 import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
 import { getFolders, getData } from '@/lib/api';
 
-export function splitByFormat(data: Array<FormattedRelease>): [Array<FormattedRelease>, Array<FormattedRelease>, Array<FormattedRelease>] {
+function splitByFormat(data: Array<FormattedRelease>): [Array<FormattedRelease>, Array<FormattedRelease>, Array<FormattedRelease>] {
   const lpArr: Array<FormattedRelease> = [];
   const singleArr: Array<FormattedRelease> = [];
   const otherArr: Array<FormattedRelease> = [];
