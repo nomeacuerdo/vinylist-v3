@@ -14,14 +14,17 @@ export default async function Page({ params }: { params: { id: string } }) {
     const artist = item.basic_information.artists.length > 1
     ? stupidSpecificArtistNamingCriteria(item.basic_information, true)
     : stupidSpecificArtistNamingCriteria(item.basic_information, false);
+    const notes = Array.isArray(item.notes) ? item.notes : [];
+    const acquired = notes[0]?.value || '';
+    const year = notes[1]?.value || '';
 
     const newItem = {
       ...item,
       cover: thumb,
       artist,
       format: getFormat(item.basic_information?.formats),
-      acquired: item.notes[0]?.value || '',
-      year:  item.notes[1]?.value || '',
+      acquired,
+      year,
       dealer: folderData,
     };
 

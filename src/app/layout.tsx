@@ -35,6 +35,7 @@ export default function RootLayout({
               <Button href="/" className="max-sm:hidden">Home</Button>
               <Button href="/folders">Dealers</Button>
               <Button href="/wantlist">Wantlist</Button>
+              <Button href="/calendar">Calendar</Button>
             </div>
           </div>
         </nav>

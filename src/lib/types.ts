@@ -28,6 +28,15 @@ export type Release = {
   format: string;
 };
 
+export type FormattedRelease = {
+  id: number;
+  cover: string;
+  artist: string;
+  name: string;
+  format: string;
+  year: string;
+};
+
 export type PaginationType = {
   page: number;
   pages: number;

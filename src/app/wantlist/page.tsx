@@ -18,8 +18,6 @@ export default async function Page({ params }: { params: { id: string } }) {
       cover: thumb,
       artist,
       format: getFormat(item.basic_information?.formats),
-      acquired: item.notes[0]?.value || '',
-      year:  item.notes[1]?.value || '',
     };
 
     return newItem;

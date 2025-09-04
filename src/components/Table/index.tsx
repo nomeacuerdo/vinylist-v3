@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link';
 import { useMediaQuery } from '@chakra-ui/react';
-import React, { useEffect, useState, FC, isValidElement } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -125,19 +125,26 @@ const defaultColumns: ColumnDef<Release>[] = [
       )
     },
     filter: true,
+    filterFn: (row, columnId, filterValue) => {
+      const value = row.getValue(columnId);
+      if (filterValue === 'notLP') {
+        return !String(value).includes("LP");
+      }
+      return value === filterValue;
+    },
   },
   {
     id: "year",
     accessorKey: "year",
     // @ts-ignore
-    title: "Year",
+    title: "Released in",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Year
+          Released in
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -350,11 +357,47 @@ const DataTable: FC<TableProps> = ({ data, wantlist }) => {
                       {
                         // @ts-ignore
                         header.column.columnDef.filter &&
-                        getFilter(
-                          table,
-                          header.column.id,
-                          // @ts-ignore
-                          header.column.columnDef.title
+                        (
+                          // Show 3 buttons for Format column, otherwise show default filter
+                          header.column.columnDef.id === "format" ? (
+                            <div className="flex gap-2 my-0">
+                              {["All", "LP", "Other"].map((label) => (
+                                <Button
+                                  key={label}
+                                  variant={
+                                    label === "All"
+                                      ? table.getColumn(header.column.id)?.getFilterValue() === undefined
+                                        ? "default"
+                                        : "outline"
+                                      : label === "LP"
+                                        ? table.getColumn(header.column.id)?.getFilterValue() === "LP"
+                                          ? "default"
+                                          : "outline"
+                                        : table.getColumn(header.column.id)?.getFilterValue() === 'notLP'
+                                          ? "default"
+                                          : "outline"
+                                  }
+                                  size="sm"
+                                  onClick={() => {
+                                    if (label === "All") {
+                                      table.getColumn(header.column.id)?.setFilterValue(undefined);
+                                    } else if (label === "LP") {
+                                      table.getColumn(header.column.id)?.setFilterValue("LP");
+                                    } else if (label === "Other") {
+                                      table.getColumn(header.column.id)?.setFilterValue('notLP');
+                                    }
+                                  }}
+                                >
+                                  {label}
+                                </Button>
+                              ))}
+                            </div>
+                          ) : getFilter(
+                            table,
+                            header.column.id,
+                            // @ts-ignore
+                            header.column.columnDef.title
+                          )
                         )
                       }
                     </TableHead>

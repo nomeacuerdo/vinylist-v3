@@ -16,14 +16,17 @@ export default async function Home() {
     ? stupidSpecificArtistNamingCriteria(item.basic_information, true)
     : stupidSpecificArtistNamingCriteria(item.basic_information, false);
     const dealer = folders.find((fold) => item.folder_id === fold.id);
+    const notes = Array.isArray(item.notes) ? item.notes : [];
+    const acquired = notes[0]?.value || '';
+    const year = notes[1]?.value || '';
 
     const newItem = {
       ...item,
       cover: thumb,
       artist,
       format: getFormat(item.basic_information?.formats),
-      acquired: item.notes[0]?.value || '',
-      year:  item.notes[1]?.value || '',
+      acquired,
+      year,
       dealer,
     };
 
