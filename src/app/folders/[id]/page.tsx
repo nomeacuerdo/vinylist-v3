@@ -17,6 +17,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     const notes = Array.isArray(item.notes) ? item.notes : [];
     const acquired = notes[0]?.value || '';
     const year = notes[1]?.value || '';
+    const pending = notes[2]?.value || null;
 
     const newItem = {
       ...item,
@@ -26,6 +27,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       acquired,
       year,
       dealer: folderData,
+      pending,
     };
 
     return newItem;

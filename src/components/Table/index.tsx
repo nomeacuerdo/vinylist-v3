@@ -58,8 +58,9 @@ const defaultColumns: ColumnDef<Release>[] = [
     accessorKey: "cover",
     // @ts-ignore
     title: "Cover",
-    header: "Cover",
+    header: "",
     filter: false,
+    isPlaceholder: true,
   },
   {
     id: "title",
@@ -198,6 +199,36 @@ const defaultColumns: ColumnDef<Release>[] = [
     },
     filter: true,
   },
+  {
+    id: "pending",
+    accessorKey: "pending",
+    // @ts-ignore
+    title: "Pending?",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={column.getFilterValue() !== undefined ? "default" : "ghost"}
+          onClick={() => {
+            if (column.getFilterValue() !== undefined) {
+              column.setFilterValue(undefined);
+            } else {
+              column.setFilterValue("Yes");
+            }
+          }}
+        >
+          Pending?
+        </Button>
+      )
+    },
+    filter: false,
+    filterFn: (row, columnId, filterValue) => {
+      const value = row.getValue(columnId);
+      if (filterValue === 'Yes') {
+        return String(value).includes("Yes");
+      }
+      return value === filterValue;
+    },
+  },
 ];
 // @ts-ignore
 const wantlistColumns: ColumnDef<Release>[] = [
@@ -301,6 +332,7 @@ const DataTable: FC<TableProps> = ({ data, wantlist }) => {
     year: true,
     dealer: true,
     acquired: true,
+    pending: true,
   });
 
   const table = useReactTable({
@@ -329,6 +361,7 @@ const DataTable: FC<TableProps> = ({ data, wantlist }) => {
       year: !isMobile,
       dealer: !isMobile,
       acquired: !isMobile,
+      pending: !isMobile,
     });
   }, [isMobile]);
 
@@ -338,12 +371,12 @@ const DataTable: FC<TableProps> = ({ data, wantlist }) => {
         <Table className="table-bullshit w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className='table-header'>
                 {headerGroup.headers.map((header) => {
                   const isSorted = header.column.getIsSorted() && 'text-indigo-600';
                   return (
                     <TableHead
-                      className={`content-start ${isSorted}`}
+                      className={`text-center align-top ${isSorted}`}
                       key={header.id}
                     >
                       {
