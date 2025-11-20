@@ -33,6 +33,25 @@ export default async function Home() {
     };
 
     return newItem;
+  }).sort((a, b) => {
+    const artistA = a.artist.toLowerCase();
+    const artistB = b.artist.toLowerCase();
+    if (artistA < artistB) {
+      return -1;
+    }
+    if (artistA > artistB) {
+      return 1;
+    }
+    // If artists are equal, sort by year (ascending)
+    // Extract year as integer from YYYY or YYYY-MM-DD
+    const getYear = (val: string) => {
+      if (!val) return Number.MAX_SAFE_INTEGER;
+      const match = val.match(/^(\d{4})/);
+      return match ? parseInt(match[1], 10) : Number.MAX_SAFE_INTEGER;
+    };
+    const yearA = getYear(a.year);
+    const yearB = getYear(b.year);
+    return yearA - yearB;
   });
 
   return (

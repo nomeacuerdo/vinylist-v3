@@ -128,10 +128,20 @@ const defaultColumns: ColumnDef<Release>[] = [
     filter: true,
     filterFn: (row, columnId, filterValue) => {
       const value = row.getValue(columnId);
-      if (filterValue === 'notLP') {
+
+      if (filterValue === 'LP') {
+        return String(value).includes("LP");
+      } else if (filterValue === "10\"") {
+        return String(value).includes("10\"");
+      } else if (filterValue === "7\"") {
+        return String(value).includes("7\"");
+      } else if (filterValue === "Not 7\"") {
+        return !String(value).includes("7\"");
+      } else if (filterValue === "Other") {
         return !String(value).includes("LP");
+      } else {
+        return true;
       }
-      return value === filterValue;
     },
   },
   {
@@ -207,12 +217,20 @@ const defaultColumns: ColumnDef<Release>[] = [
     header: ({ column }) => {
       return (
         <Button
-          variant={column.getFilterValue() !== undefined ? "default" : "ghost"}
+          variant={
+            column.getFilterValue() === undefined
+            ? "ghost"
+            :  column.getFilterValue() === "Yes"
+            ? "secondary"
+            : "default"
+          }
           onClick={() => {
-            if (column.getFilterValue() !== undefined) {
-              column.setFilterValue(undefined);
-            } else {
+            if (column.getFilterValue() === undefined) {
               column.setFilterValue("Yes");
+            } else if (column.getFilterValue() === "Yes") {
+              column.setFilterValue("No");
+            } else {
+              column.setFilterValue(undefined);
             }
           }}
         >
@@ -225,6 +243,9 @@ const defaultColumns: ColumnDef<Release>[] = [
       const value = row.getValue(columnId);
       if (filterValue === 'Yes') {
         return String(value).includes("Yes");
+      }
+      if (filterValue === 'No') {
+        return !String(value).includes("Yes");
       }
       return value === filterValue;
     },
@@ -393,38 +414,51 @@ const DataTable: FC<TableProps> = ({ data, wantlist }) => {
                         (
                           // Show 3 buttons for Format column, otherwise show default filter
                           header.column.columnDef.id === "format" ? (
-                            <div className="flex gap-2 my-0">
-                              {["All", "LP", "Other"].map((label) => (
-                                <Button
-                                  key={label}
-                                  variant={
-                                    label === "All"
-                                      ? table.getColumn(header.column.id)?.getFilterValue() === undefined
-                                        ? "default"
-                                        : "outline"
-                                      : label === "LP"
-                                        ? table.getColumn(header.column.id)?.getFilterValue() === "LP"
-                                          ? "default"
-                                          : "outline"
-                                        : table.getColumn(header.column.id)?.getFilterValue() === 'notLP'
-                                          ? "default"
-                                          : "outline"
-                                  }
-                                  size="sm"
-                                  onClick={() => {
-                                    if (label === "All") {
-                                      table.getColumn(header.column.id)?.setFilterValue(undefined);
-                                    } else if (label === "LP") {
-                                      table.getColumn(header.column.id)?.setFilterValue("LP");
-                                    } else if (label === "Other") {
-                                      table.getColumn(header.column.id)?.setFilterValue('notLP');
-                                    }
-                                  }}
-                                >
-                                  {label}
-                                </Button>
-                              ))}
-                            </div>
+                            <Select
+                              value={String(table.getColumn(header.column.id)?.getFilterValue())}
+                              onValueChange={(e) => {
+                                table.getColumn(header.column.id)?.setFilterValue(e);
+                              }}
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder={String(table.getColumn(header.column.id)?.getFilterValue())} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  {["All", "LP", "10\"", "7\"", "Not 7\"", "Other"].map((label) => (
+                                    <SelectItem key={label} value={String(label)}>{label}</SelectItem>
+                                    // <Button
+                                    //   key={label}
+                                    //   variant={
+                                    //     label === "All"
+                                    //       ? table.getColumn(header.column.id)?.getFilterValue() === undefined
+                                    //         ? "default"
+                                    //         : "outline"
+                                    //       : label === "LP"
+                                    //         ? table.getColumn(header.column.id)?.getFilterValue() === "LP"
+                                    //           ? "default"
+                                    //           : "outline"
+                                    //         : table.getColumn(header.column.id)?.getFilterValue() === 'notLP'
+                                    //           ? "default"
+                                    //           : "outline"
+                                    //   }
+                                    //   size="sm"
+                                    //   onClick={() => {
+                                    //     if (label === "All") {
+                                    //       table.getColumn(header.column.id)?.setFilterValue(undefined);
+                                    //     } else if (label === "LP") {
+                                    //       table.getColumn(header.column.id)?.setFilterValue("LP");
+                                    //     } else if (label === "Other") {
+                                    //       table.getColumn(header.column.id)?.setFilterValue('notLP');
+                                    //     }
+                                    //   }}
+                                    // >
+                                    //   {label}
+                                    // </Button>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
                           ) : getFilter(
                             table,
                             header.column.id,
@@ -447,7 +481,13 @@ const DataTable: FC<TableProps> = ({ data, wantlist }) => {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell: Cell<Release, string & unknown>) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className={`align-top ${
+                        // @ts-ignore
+                        cell.column.columnDef.title === 'Name' ? 'text-left' : 'justify-center text-center'
+                      }`}
+                    >
                       {
                         // @ts-ignore
                         cell.column.columnDef.title === 'Cover'
