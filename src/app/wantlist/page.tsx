@@ -4,7 +4,7 @@ import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
 import { Release, PaginationType } from '@/lib/types';
 import { getWantlistData } from '@/lib/api';
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page() {
   const url = `https://api.discogs.com/users/${process.env.USERNAME}/wants?per_page=100`;
   const [data, pagination]: [Release[], PaginationType] = await getWantlistData(url);
   const formattedData = data.map((item) => {

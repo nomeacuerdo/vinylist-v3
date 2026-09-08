@@ -492,6 +492,16 @@ const DataTable: FC<TableProps> = ({ data, wantlist }) => {
                         // @ts-ignore
                         cell.column.columnDef.title === 'Cover'
                         ? (<Modal cell={cell} />)
+                        : wantlist && cell.column.id === 'title'
+                        ? (
+                          <Link
+                            href={`//discogs.com/release/${cell.row.original.basic_information.id}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {cell.row.original.basic_information.title}
+                          </Link>
+                        )
                         : flexRender(cell.column.columnDef.cell, cell.getContext()) as React.ReactNode
                       }
                     </TableCell>

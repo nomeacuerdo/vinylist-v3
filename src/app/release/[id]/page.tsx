@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { ExternalLinkIcon } from "@radix-ui/react-icons"
 import {
   Table,
@@ -13,10 +14,14 @@ import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
 import { Release, FolderType } from '@/lib/types';
 import { getParentReleaseData, getReleaseData, getFolders } from '@/lib/api';
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const folders: FolderType[] = await getFolders();
-  const releaseData: Release = await getReleaseData(`https://api.discogs.com/users/${process.env.USERNAME}/collection/releases/${params.id}`);
-  const parentRelease: Release = await getParentReleaseData(`https://api.discogs.com/releases/${params.id}`);
+  const releaseData: Release = await getReleaseData(`https://api.discogs.com/users/${process.env.USERNAME}/collection/releases/${id}`);
+  const parentRelease: Release = await getParentReleaseData(`https://api.discogs.com/releases/${id}`);
+  if (!releaseData?.basic_information) {
+    notFound();
+  }
   const cover = releaseData?.basic_information.cover_image;
   const title = releaseData?.basic_information.title;
   const artist = releaseData.basic_information.artists.length > 1

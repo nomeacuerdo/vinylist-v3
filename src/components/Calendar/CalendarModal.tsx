@@ -16,17 +16,26 @@ import {
 const CalendarModal: FC<{
   records: FormattedRelease[];
   day: number;
+  month: number;
   monthName: string;
-}> = ({ records, day, monthName }) => {
+  today: Date;
+}> = ({ records, day, month, monthName, today }) => {
+  const isToday = today.getMonth() === month && today.getDate() === day;
+
   return (
     <AlertDialog>
       <AlertDialogTrigger>
         {day}
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent >
         <AlertDialogHeader>
-          <AlertDialogTitle>Albums on {monthName} {day}</AlertDialogTitle>
+          <AlertDialogTitle className="text-center">
+            {isToday ? 'Albums released today!' : `Albums released on ${monthName} ${day}`}
+          </AlertDialogTitle>
         </AlertDialogHeader>
+        <AlertDialogDescription className="AlertDialogDescription">
+					{isToday ? 'Shows the albums that were released today' : `Shows the albums that were released on ${monthName} ${day}`}
+				</AlertDialogDescription>
 
         <ul className="divide-y divide-gray-200 my-4 max-h-64">
           {records.map((rec, idx) => (
@@ -53,7 +62,6 @@ const CalendarModal: FC<{
                   <span className="text-gray-400 text-xs">
                     ({rec.year.slice(0, 4)})
                     {(() => {
-                      const now = new Date();
                       let fromDate: Date | null = null;
                       if (/^\d{4}-\d{2}-\d{2}$/.test(rec.year)) {
                         fromDate = new Date(rec.year);
@@ -63,13 +71,17 @@ const CalendarModal: FC<{
                         fromDate = new Date(`${rec.year}-01-01`);
                       }
                       if (fromDate) {
-                        let elapsed = now.getFullYear() - fromDate.getFullYear();
-                        // If the month/day hasn't occurred yet this year, subtract 1
+                        let elapsed = today.getFullYear() - fromDate.getFullYear();
                         const hasPassed =
-                          now.getMonth() > fromDate.getMonth() ||
-                          (now.getMonth() === fromDate.getMonth() && now.getDate() >= fromDate.getDate());
-                        if (!hasPassed) elapsed--;
-                        return ` • ${elapsed} year${elapsed === 1 ? '' : 's'} ago`;
+                          today.getMonth() > fromDate.getMonth() ||
+                          (today.getMonth() === fromDate.getMonth() && today.getDate() >= fromDate.getDate());
+                        const cakeMarker = isToday ? ' 🎂' : ' •';
+
+                        if (hasPassed || isToday) {
+                          return `${cakeMarker} ${elapsed} year${elapsed === 1 ? '' : 's'} old`;
+                        }
+
+                        return `${cakeMarker} ${elapsed - 1} 👉 ${elapsed} years old`;
                       }
                       return '';
                     })()}

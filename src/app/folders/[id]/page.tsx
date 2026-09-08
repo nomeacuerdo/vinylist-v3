@@ -4,10 +4,11 @@ import { getFormat, stupidSpecificArtistNamingCriteria } from '@/lib/utils';
 import { Release, FolderType } from '@/lib/types';
 import { getFolderData, getData } from '@/lib/api';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const folderData: FolderType = await getFolderData(`https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/${params.id}`);
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const folderData: FolderType = await getFolderData(`https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/${id}`);
 
-  const url = `https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/${params.id}/releases?per_page=100`;
+  const url = `https://api.discogs.com/users/${process.env.USERNAME}/collection/folders/${id}/releases?per_page=100`;
   const data: Release[] = await getData(url);
   const formattedData = data.map((item) => {
     const { title, thumb } = item.basic_information;

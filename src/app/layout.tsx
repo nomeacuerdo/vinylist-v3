@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} ${oswald.variable}`}>
+    <html lang="en" className={`${inter.variable} ${oswald.variable} dark`}>
+      <body>
         <nav className="flex h-16 px-4 mb-2 border-b">
           <div className="flex container mx-auto items-center md:space-x-4 lg:space-x-6 p-0">
             <div className="flex items-center">
